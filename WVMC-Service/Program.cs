@@ -1,4 +1,42 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using System;
+using System.Drawing;
+using System.IO.Ports;
+using System.Text;
 using System.Windows.Forms;
+using Topshelf;
 
-Console.WriteLine("Hello, World!");
+namespace WVMC_Service
+{
+    internal class Program
+    {
+        public static void Main(string[] args)
+        {
+            var observer = new Observer();
+            
+            observer.Start();
+
+            Console.ReadLine();
+            
+            observer.Stop();
+
+            /*
+            var errorCode = HostFactory.Run(host =>
+            {
+                host.Service<Observer>(service =>
+            {
+                    service.ConstructUsing(observer => new Observer());
+                    service.WhenStarted(observer => observer.Start());
+                    service.WhenStopped(observer => observer.Stop());
+                });
+
+                host.RunAsLocalSystem();
+                
+                host.SetServiceName("VMK-Client");
+                host.SetDisplayName("VMK-Client");
+                host.SetDescription("Client of the VK Communicator");
+            });*/
+            
+            Console.WriteLine("Hello World");
+        }
+    }
+}

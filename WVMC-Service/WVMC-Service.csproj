@@ -10,4 +10,10 @@
 	<UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    <PackageReference Include="System.IO.Ports" Version="6.0.0" />
+    <PackageReference Include="Topshelf" Version="4.3.1-develop.253" />
+  </ItemGroup>
+
 </Project>
