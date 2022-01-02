@@ -6,6 +6,7 @@
     <RootNamespace>WVMC_Service</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <BaseOutputPath>$(SolutionDir)Build\</BaseOutputPath>
   </PropertyGroup>
 
 </Project>
