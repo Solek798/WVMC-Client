@@ -2,19 +2,26 @@
 //
 
 #include <iostream>
+#include <string>
+#include <Windows.h>
 
-int main()
+int main(int argc, char* args[])
 {
-    std::cout << "Hello C#!" << std::endl;
+    std::cout << "Hello C#! Number of arguments: " << argc << std::endl;
+
+    for (int i = 0; i < argc; i++) {
+        std::string argument = args[i];
+        std::cout << "Arg " << i << ": " << argument << std::endl;
+    }
+
+    const int handle = std::atoi(args[1]);
+    const auto h_handle = reinterpret_cast<void*>(handle);  // NOLINT(performance-no-int-to-ptr)
+    
+    char message[100];
+    
+    ReadFile(h_handle, message, 100, nullptr, nullptr);
+
+    std::string message_from_host = message;
+    std::cout << "Received message from C#: " << message << std::endl;
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file

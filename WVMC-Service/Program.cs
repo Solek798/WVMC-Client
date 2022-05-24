@@ -1,9 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.IO.Ports;
-using System.Text;
-using System.Windows.Forms;
-using Topshelf;
+﻿using Topshelf;
 
 namespace WVMC_Service
 {

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Drawing;
-using System.IO.Ports;
+﻿using System.IO.Ports;
 using System.Diagnostics;
 using System.Text;
-using System.Windows.Forms;
 using System.IO.Pipes;
 
 namespace WVMC_Service
@@ -15,7 +12,9 @@ namespace WVMC_Service
         private readonly byte[] _header;
         private SerialPort _port;
         private IntPtr _hookHandle;
-        private AnonymousPipeServerStream _anonymusPipeServerStream;
+
+        private Process _hook;
+        private AnonymousPipeServerStream _anonymousPipeServerStream;
 
         public Observer()
         {
@@ -38,31 +37,17 @@ namespace WVMC_Service
         public void Start()
         {
             //_port.Open();
-            /*using (var currentProcess = Process.GetCurrentProcess())
-            using (var currentModule = currentProcess.MainModule)
-            {
-                var id = WinSDKImports.GetCurrentThreadId();
-                var type = (int) WinSDKImports.HookType.WH_KEYBOARD_LL;
-                
-                _hookHandle = WinSDKImports.SetWindowsHookEx(
-                    type, 
-                    _proc, 
-                    WinSDKImports.GetModuleHandle(currentModule?.ModuleName), 
-                    id);
-
-                if (_hookHandle == IntPtr.Zero)
-                {
-                    Console.WriteLine("Error: " + Marshal.GetLastWin32Error());
-                }
-            }*/
-            Process process = new Process();
-            process.StartInfo.FileName = "..\\WVMC-LowLevelKeyboardHook.exe";
-            process.StartInfo.UseShellExecute = false;
-            process.Start();
-
-            //_anonymusPipeServerStream = new AnonymousPipeServerStream(PipeDirection.Out, System.IO.HandleInheritability.Inheritable);
-            //_anonymusPipeServerStream.
-
+            
+            _anonymousPipeServerStream = new AnonymousPipeServerStream(PipeDirection.Out, HandleInheritability.Inheritable);
+            
+            _hook = new Process();
+            _hook.StartInfo.FileName = "..\\WVMC-LowLevelKeyboardHook.exe";
+            _hook.StartInfo.Arguments = _anonymousPipeServerStream.GetClientHandleAsString();
+            _hook.StartInfo.UseShellExecute = false;
+            _hook.Start();
+            
+            _anonymousPipeServerStream.DisposeLocalCopyOfClientHandle();
+            _anonymousPipeServerStream.Write(Encoding.UTF8.GetBytes("test"));
 
             _notifyIcon = new NotifyIcon();
             _notifyIcon.Text = "Test Icon!";
@@ -82,9 +67,9 @@ namespace WVMC_Service
             _port.Write(buffer, 0, buffer.Length);*/
             Console.WriteLine("Stop");
 
-            //WinSDKImports.UnhookWindowsHookEx(_hookHandle);
-            
+            _hook.Close();
             _notifyIcon.Dispose();
+            _anonymousPipeServerStream.Dispose();
             
             //_port.Close();
         }
