@@ -2,9 +2,12 @@
 using System.Diagnostics;
 using System.Text;
 using System.IO.Pipes;
+using System.Runtime.InteropServices;
 
 namespace WVMC_Service
 {
+    
+    
     public class Observer
     {
         private NotifyIcon _notifyIcon;
@@ -14,7 +17,17 @@ namespace WVMC_Service
         private IntPtr _hookHandle;
 
         private Process _hook;
-        private AnonymousPipeServerStream _anonymousPipeServerStream;
+        private AnonymousPipeServerStream _inPipe;
+        private AnonymousPipeServerStream _outPipe;
+
+        private StreamReader _listener;
+        private Task _listenTask;
+        
+        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool PostThreadMessage(uint threadId, uint msg, UIntPtr wParam, IntPtr lParam);
+        
+        private const uint WM_QUIT = 0x0012;
 
         public Observer()
         {
@@ -38,16 +51,25 @@ namespace WVMC_Service
         {
             //_port.Open();
             
-            _anonymousPipeServerStream = new AnonymousPipeServerStream(PipeDirection.Out, HandleInheritability.Inheritable);
+            _inPipe = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.Inheritable);
+            //_outPipe = new AnonymousPipeServerStream(PipeDirection.O, HandleInheritability.Inheritable);
             
             _hook = new Process();
             _hook.StartInfo.FileName = "..\\WVMC-LowLevelKeyboardHook.exe";
-            _hook.StartInfo.Arguments = _anonymousPipeServerStream.GetClientHandleAsString();
+            _hook.StartInfo.Arguments = _inPipe.GetClientHandleAsString();
             _hook.StartInfo.UseShellExecute = false;
             _hook.Start();
             
-            _anonymousPipeServerStream.DisposeLocalCopyOfClientHandle();
-            _anonymousPipeServerStream.Write(Encoding.UTF8.GetBytes("test"));
+
+            //Console.WriteLine(_hook.MainWindowHandle);
+            
+            _inPipe.DisposeLocalCopyOfClientHandle();
+            //_anonymousPipeServerStream.Write(Encoding.UTF8.GetBytes("test"));
+            //_anonymousPipeServerStream.ReadMode
+
+            _listener = new StreamReader(_inPipe);
+            _listenTask = Task.Run(Listen);
+
 
             _notifyIcon = new NotifyIcon();
             _notifyIcon.Text = "Test Icon!";
@@ -55,7 +77,16 @@ namespace WVMC_Service
             _notifyIcon.Visible = true;
         }
 
-        public void Stop()
+        private void Listen()
+        {
+            /*while (true)
+            {
+                var message = _listener.Read();
+                Console.WriteLine("Message: " + message);
+            }*/
+        }
+
+        public async Task Stop()
         {
             /*var buffer = new byte[8];
             var header = Encoding.UTF8.GetBytes("vmk:");
@@ -67,11 +98,24 @@ namespace WVMC_Service
             _port.Write(buffer, 0, buffer.Length);*/
             Console.WriteLine("Stop");
 
-            _hook.Close();
+            _listenTask.Dispose();
+            _listener.Dispose();
+            _inPipe.Dispose();
+            
+            PostThreadMessage((uint) _hook.Threads[0].Id, WM_QUIT, UIntPtr.Zero, IntPtr.Zero);
+            await _hook.WaitForExitAsync();
+            //_hook.Close();
+            //_hook.Kill();
+            //_hook.CloseMainWindow();
             _notifyIcon.Dispose();
-            _anonymousPipeServerStream.Dispose();
+            
             
             //_port.Close();
+        }
+
+        private void SendExitMessageToHook()
+        {
+            
         }
     }
 }

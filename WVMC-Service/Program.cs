@@ -4,7 +4,7 @@ namespace WVMC_Service
 {
     internal class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var observer = new Observer();
             
@@ -12,10 +12,10 @@ namespace WVMC_Service
 
             Console.ReadLine();
             
-            observer.Stop();
+            await observer.Stop();
 
-            /*
-            var errorCode = HostFactory.Run(host =>
+            
+            /*var errorCode = HostFactory.Run(host =>
             {
                 host.Service<Observer>(service =>
             {
