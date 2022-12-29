@@ -2,32 +2,22 @@
 using System.Diagnostics;
 using System.Text;
 using System.IO.Pipes;
-using System.Runtime.InteropServices;
+using System.Windows.Input;
 
 namespace WVMC_Service
 {
-    
-    
     public class Observer
     {
         private NotifyIcon _notifyIcon;
 
         private readonly byte[] _header;
         private SerialPort _port;
-        private IntPtr _hookHandle;
 
         private Process _hook;
+        
         private AnonymousPipeServerStream _inPipe;
-        private AnonymousPipeServerStream _outPipe;
 
-        private StreamReader _listener;
         private Task _listenTask;
-        
-        [return: MarshalAs(UnmanagedType.Bool)]
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool PostThreadMessage(uint threadId, uint msg, UIntPtr wParam, IntPtr lParam);
-        
-        private const uint WM_QUIT = 0x0012;
 
         public Observer()
         {
@@ -52,24 +42,19 @@ namespace WVMC_Service
             //_port.Open();
             
             _inPipe = new AnonymousPipeServerStream(PipeDirection.In, HandleInheritability.Inheritable);
-            //_outPipe = new AnonymousPipeServerStream(PipeDirection.O, HandleInheritability.Inheritable);
+            
+            
+            Console.WriteLine(_inPipe.IsAsync);
             
             _hook = new Process();
             _hook.StartInfo.FileName = "..\\WVMC-LowLevelKeyboardHook.exe";
             _hook.StartInfo.Arguments = _inPipe.GetClientHandleAsString();
             _hook.StartInfo.UseShellExecute = false;
             _hook.Start();
-            
 
-            //Console.WriteLine(_hook.MainWindowHandle);
-            
             _inPipe.DisposeLocalCopyOfClientHandle();
-            //_anonymousPipeServerStream.Write(Encoding.UTF8.GetBytes("test"));
-            //_anonymousPipeServerStream.ReadMode
-
-            _listener = new StreamReader(_inPipe);
+            
             _listenTask = Task.Run(Listen);
-
 
             _notifyIcon = new NotifyIcon();
             _notifyIcon.Text = "Test Icon!";
@@ -79,11 +64,26 @@ namespace WVMC_Service
 
         private void Listen()
         {
-            /*while (true)
+            var buffer = new byte[4];
+            
+            while (true)
             {
-                var message = _listener.Read();
+                var count = _inPipe.Read(buffer);
+
+                // Check if Quit confirmation is received...
+                if (count == 1 && buffer[0] == 0)
+                    // ...if it is, end the Task
+                    break;
+                    
+                if (count != 4)
+                    continue;
+
+                var message = BitConverter.ToInt32(buffer);
+
                 Console.WriteLine("Message: " + message);
-            }*/
+            }
+            
+            Console.WriteLine("Listener Stops...");
         }
 
         public async Task Stop()
@@ -98,15 +98,19 @@ namespace WVMC_Service
             _port.Write(buffer, 0, buffer.Length);*/
             Console.WriteLine("Stop");
 
-            _listenTask.Dispose();
-            _listener.Dispose();
-            _inPipe.Dispose();
-            
-            PostThreadMessage((uint) _hook.Threads[0].Id, WM_QUIT, UIntPtr.Zero, IntPtr.Zero);
+            // Stop LowLevelKeyboardHook ...
+            DllImports.PostThreadMessage((uint) _hook.Threads[0].Id, DllImports.WM_QUIT, UIntPtr.Zero, IntPtr.Zero);
             await _hook.WaitForExitAsync();
-            //_hook.Close();
-            //_hook.Kill();
-            //_hook.CloseMainWindow();
+            _hook.Dispose();
+            
+            // ... which ultimately stops Listener Task
+            await _listenTask.WaitAsync(CancellationToken.None);
+            
+            // Close Pipe
+            _inPipe.Close();
+            await _inPipe.DisposeAsync();
+            
+            // Shutdown NotifyIcon
             _notifyIcon.Dispose();
             
             
