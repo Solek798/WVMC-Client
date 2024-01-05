@@ -56,10 +56,7 @@ namespace WVMC_Service
             
             _listenTask = Task.Run(Listen);
 
-            _notifyIcon = new NotifyIcon();
-            _notifyIcon.Text = "Test Icon!";
-            _notifyIcon.Icon = new Icon(SystemIcons.Exclamation, 40, 40);
-            _notifyIcon.Visible = true;
+            
         }
 
         private void Listen()
@@ -99,7 +96,7 @@ namespace WVMC_Service
             Console.WriteLine("Stop");
 
             // Stop LowLevelKeyboardHook ...
-            DllImports.PostThreadMessage((uint) _hook.Threads[0].Id, DllImports.WM_QUIT, UIntPtr.Zero, IntPtr.Zero);
+            SendExitMessageToHook();
             await _hook.WaitForExitAsync();
             _hook.Dispose();
             
@@ -119,7 +116,11 @@ namespace WVMC_Service
 
         private void SendExitMessageToHook()
         {
-            
+            DllImports.PostThreadMessage(
+                (uint) _hook.Threads[0].Id, 
+                DllImports.WM_QUIT, 
+                UIntPtr.Zero, 
+                IntPtr.Zero);
         }
     }
 }

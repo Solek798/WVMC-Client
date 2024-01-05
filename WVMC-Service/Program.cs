@@ -1,4 +1,7 @@
 ﻿using Topshelf;
+using WVMC_OptionsMenu;
+using WVMC_UserInterface;
+
 
 namespace WVMC_Service
 {
@@ -6,13 +9,13 @@ namespace WVMC_Service
     {
         public static async Task Main(string[] args)
         {
-            var observer = new Observer();
+            var service = new Service();
             
-            observer.Start();
+            service.Start();
 
             Console.ReadLine();
             
-            await observer.Stop();
+            await service.Stop();
 
             
             /*var errorCode = HostFactory.Run(host =>
@@ -30,6 +33,7 @@ namespace WVMC_Service
                 host.SetDisplayName("VMK-Client");
                 host.SetDescription("Client of the VK Communicator");
             });*/
+
             
             Console.WriteLine("Hello World");
         }
