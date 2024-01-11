@@ -1,5 +1,4 @@
 ﻿using Topshelf;
-using WVMC_OptionsMenu;
 using WVMC_UserInterface;
 
 
