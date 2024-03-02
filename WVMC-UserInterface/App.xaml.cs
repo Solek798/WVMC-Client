@@ -46,6 +46,7 @@ namespace WVMC_UserInterface
             _notifyIcon = new Forms.NotifyIcon();
             _notifyIcon.Text = "Handle 1: " + syncHandle + " | Handle 2: " + stopHandle;
             _notifyIcon.Icon = new Icon("Resources\\Icon.ico", 64, 64);
+            _notifyIcon.Click += OpenOptions;
             _notifyIcon.Visible = true;
             
             var menuStrip = new Forms.ContextMenuStrip();
@@ -104,7 +105,8 @@ namespace WVMC_UserInterface
 
         private void OpenOptions(object? o, EventArgs e)
         {
-            
+            var window = new OptionsWindow();
+            window.Show();
         }
 
         private void ManuallyShutdown(object? o, EventArgs e)

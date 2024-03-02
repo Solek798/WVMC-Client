@@ -4,9 +4,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:WVMC_UserInterface"
+        xmlns:components="clr-namespace:WVMC_UserInterface.Components"
         mc:Ignorable="d"
         Title="OptionsWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+    <StackPanel>
+        <Label HorizontalAlignment="Center">Available Shortcuts:</Label>
+        <ScrollViewer>
+            <StackPanel Orientation="Vertical">
+                <components:ShortcutEntry></components:ShortcutEntry>
+                <components:ShortcutEntry></components:ShortcutEntry>
+                <components:ShortcutEntry></components:ShortcutEntry>
+            </StackPanel>
+        </ScrollViewer>
+    </StackPanel>
 </Window>

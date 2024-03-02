@@ -1,0 +1,54 @@
+﻿<UserControl x:Class="WVMC_UserInterface.Components.ShortcutEntry"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:WVMC_UserInterface.Components"
+             mc:Ignorable="d"
+             d:DesignHeight="200" d:DesignWidth="300">
+    <Border BorderBrush="Gray" BorderThickness="1" Margin="5">
+        <Grid>
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <TextBox x:Name="MainKeyBox" IsEnabled="False" TextAlignment="Center" Grid.Row="0" Grid.Column="0"
+                         VerticalAlignment="Center" HorizontalAlignment="Center" MinWidth="50" Margin="0,0,10,0"
+                         Height="30">
+                    Test...
+                </TextBox>
+                <Button Grid.Row="0" Grid.Column="1" Click="OnSetMainKeyClicked">
+                    <Label>Set Main Input Key</Label>
+                </Button>
+                <Button Grid.Row="0" Grid.Column="3" Click="OnDeleteEntryClicked">
+                    <Image Source="../Resources/Cross.ico" Width="32" Height="32"></Image>
+                </Button>
+
+                <Expander Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" ExpandDirection="Down" IsExpanded="True"
+                          Header="Modifier">
+                    <WrapPanel Orientation="Horizontal">
+                        <CheckBox x:Name="LShiftToggle" Checked="OnModifierButtonToggled" Margin="0,0,5,0">L-Shift</CheckBox>
+                        <CheckBox x:Name="RShiftToggle" Checked="OnModifierButtonToggled" Margin="0,0,5,0">R-Shift</CheckBox>
+                        <CheckBox x:Name="LCtrlToggle" Checked="OnModifierButtonToggled" Margin="0,0,5,0">L-Ctrl</CheckBox>
+                        <CheckBox x:Name="RCtrlToggle" Checked="OnModifierButtonToggled" Margin="0,0,5,0">R-Ctrl</CheckBox>
+                        <CheckBox x:Name="LAltToggle" Checked="OnModifierButtonToggled" Margin="0,0,5,0">L-Alt</CheckBox>
+                        <CheckBox x:Name="RAltToggle" Checked="OnModifierButtonToggled" Margin="0,0,5,0">R-Alt</CheckBox>
+                        <CheckBox x:Name="LWinToggle" Checked="OnModifierButtonToggled" Margin="0,0,5,0">L-Win</CheckBox>
+                        <CheckBox x:Name="RWinToggle" Checked="OnModifierButtonToggled" Margin="0,0,5,0">R-Win</CheckBox>
+                    </WrapPanel>
+                </Expander>
+            </Grid>
+            <Border Background="#E1808080" Visibility="Collapsed">
+                <Label VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" FontSize="20"> Input...</Label>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>
