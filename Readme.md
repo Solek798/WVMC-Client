@@ -7,7 +7,7 @@
 The Windows-Virtual-Machine-Communicator *(short WVMC)* is a Toolset for sending pre-defined commands from a qemu-based
 Windows-VM to a Linux Host. It consists of a Guest-side Client and a Host-side Server which communicate via a virtual Serial-port.
 
-Link to the [Server Repository]("https://github.com/Solek798/WVMC-Server").
+Link to the [Server Repository](https://github.com/Solek798/WVMC-Server).
 
 ### <u>How will the WVMC-Client operate?</u>
 
