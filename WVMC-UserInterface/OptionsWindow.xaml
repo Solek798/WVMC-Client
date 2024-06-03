@@ -10,10 +10,8 @@
     <StackPanel>
         <Label HorizontalAlignment="Center">Available Shortcuts:</Label>
         <ScrollViewer>
-            <StackPanel Orientation="Vertical">
-                <components:ShortcutEntry></components:ShortcutEntry>
-                <components:ShortcutEntry></components:ShortcutEntry>
-                <components:ShortcutEntry></components:ShortcutEntry>
+            <StackPanel x:Name="ContentPanel" Orientation="Vertical">
+                
             </StackPanel>
         </ScrollViewer>
     </StackPanel>

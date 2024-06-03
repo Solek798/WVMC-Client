@@ -35,18 +35,23 @@ namespace WVMC_UserInterface
         
         protected override void OnStartup(StartupEventArgs e)
         {
-            var syncHandle = e.Args[0];
-            var stopHandle = e.Args[1];
+            var debugMode = e.Args.Length <= 0;
+
+            if (!debugMode)
+            {
+                var syncHandle = e.Args[0];
+                var stopHandle = e.Args[1];
             
-            _syncPipe = new AnonymousPipeClientStream(PipeDirection.Out, syncHandle);
-            _syncWriter = new StreamWriter(_syncPipe);
-            _stopPipe = new AnonymousPipeClientStream(PipeDirection.In, stopHandle);
-            _stopReader = new StreamReader(_stopPipe);
+                _syncPipe = new AnonymousPipeClientStream(PipeDirection.Out, syncHandle);
+                _syncWriter = new StreamWriter(_syncPipe);
+                _stopPipe = new AnonymousPipeClientStream(PipeDirection.In, stopHandle);
+                _stopReader = new StreamReader(_stopPipe);
+            }
+            
             
             _notifyIcon = new Forms.NotifyIcon();
-            _notifyIcon.Text = "Handle 1: " + syncHandle + " | Handle 2: " + stopHandle;
             _notifyIcon.Icon = new Icon("Resources\\Icon.ico", 64, 64);
-            _notifyIcon.Click += OpenOptions;
+            //_notifyIcon.Click += OpenOptions;
             _notifyIcon.Visible = true;
             
             var menuStrip = new Forms.ContextMenuStrip();
@@ -60,8 +65,8 @@ namespace WVMC_UserInterface
             menuStrip.Items.Add("Shutdown", new Bitmap("Resources\\Power.ico"), ManuallyShutdown);
             _notifyIcon.ContextMenuStrip = menuStrip;
             
-
-            Task.Run(ListenToService);
+            if (!debugMode)
+                Task.Run(ListenToService);
             
             base.OnStartup(e);
         }
@@ -105,7 +110,8 @@ namespace WVMC_UserInterface
 
         private void OpenOptions(object? o, EventArgs e)
         {
-            var window = new OptionsWindow();
+            // set static Entry number by code for now
+            var window = new OptionsWindow(5);
             window.Show();
         }
 

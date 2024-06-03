@@ -18,25 +18,25 @@
 
     <ItemGroup>
       <None Remove="Resources\Check.ico" />
-      <Resource Include="Resources\Check.ico">
+      <Content Include="Resources\Check.ico">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Resource>
+      </Content>
       <None Remove="Resources\Cross.ico" />
-      <Resource Include="Resources\Cross.ico">
+      <Content Include="Resources\Cross.ico">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Resource>
+      </Content>
       <None Remove="Resources\Icon.ico" />
-      <Resource Include="Resources\Icon.ico">
+      <Content Include="Resources\Icon.ico">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Resource>
+      </Content>
       <None Remove="Resources\Power.ico" />
-      <Resource Include="Resources\Power.ico">
+      <Content Include="Resources\Power.ico">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Resource>
+      </Content>
       <None Remove="Resources\Settings.ico" />
-      <Resource Include="Resources\Settings.ico">
+      <Content Include="Resources\Settings.ico">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Resource>
+      </Content>
     </ItemGroup>
 
 </Project>
